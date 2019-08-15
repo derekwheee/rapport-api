@@ -1,15 +1,12 @@
-const sequelize = require('../db');
+const { mongoose } = require('../context');
+const { Schema, model } = mongoose;
 
-const Resort = sequelize.define('Resort', {
-    // attributes
-    Name: {
-      type: Sequelize.STRING,
-      allowNull: false
-    }
-}, {s
-    // options
+const ResortSchema = new Schema({
+    _id: Schema.Types.ObjectId,
+    name: String,
+    client: { type: Schema.Types.ObjectId, ref: 'Client' }
 });
 
-Resort.hasOne(Client);
+const Resort = model('Resort', ResortSchema);
 
 module.exports = Resort;

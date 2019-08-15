@@ -3,9 +3,13 @@
 const Hapi = require('@hapi/hapi');
 const jwt = require('hapi-auth-jwt2');
 const jwksRsa = require('jwks-rsa');
+const bootstrap = require('./bootstrap');
 const registerRoutes = require('./routes');
 
 const init = async () => {
+
+    await bootstrap();
+
     const server = new Hapi.server({
         port: 3000,
         host: 'localhost'

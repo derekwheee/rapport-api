@@ -1,15 +1,12 @@
-const sequelize = require('../db');
+const { mongoose } = require('../context');
+const { Schema, model } = mongoose;
 
-const Client = sequelize.define('Client', {
-    // attributes
-    Name: {
-      type: Sequelize.STRING,
-      allowNull: false
-    }
-}, {
-    // options
+const ClientSchema = new Schema({
+    _id: Schema.Types.ObjectId,
+    name: String,
+    resorts: [{ type: Schema.Types.ObjectId, ref: 'Resort' }]
 });
 
-Client.hasMany(Resort, { as : 'Resorts' });
+const Client = model('Client', ClientSchema);
 
 module.exports = Client;
