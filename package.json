@@ -1,0 +1,26 @@
+{
+  "name": "rapport",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "@hapi/hapi": "^18.3.2",
+    "hapi-auth-jwt2": "^8.6.1",
+    "jwks-rsa": "^1.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frxnz/rapport.git"
+  },
+  "author": "Derek Wheelden",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/frxnz/rapport/issues"
+  },
+  "homepage": "https://github.com/frxnz/rapport#readme"
+}
