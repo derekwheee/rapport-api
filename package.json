@@ -9,10 +9,12 @@
     "@hapi/joi": "^15.1.1",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.0.0",
+    "generate-password": "^1.4.2",
     "hapi-auth-jwt2": "^8.6.1",
     "hapi-router": "^5.0.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.6.9"
+    "mongoose": "^5.6.9",
+    "nodemailer": "^6.3.0"
   },
   "devDependencies": {
     "@hapi/eslint-config-hapi": "^12.2.0",

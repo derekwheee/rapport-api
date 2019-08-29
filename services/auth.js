@@ -2,15 +2,29 @@ const Joi = require('@hapi/joi');
 const Mongoose = require('mongoose');
 const Bcrypt = require('bcryptjs');
 const Jwt = require('jsonwebtoken');
+const PasswordGenerator = require('generate-password');
 const User = require('../data/User');
-const Client = require('../data/Client');
+const ClientService = require('../services/client');
+const EmailService = require('../services/email');
 
 // Validation
-const registerSchema = {
+const clientSchema = {
     name: Joi.string().min(6).max(255).required(),
     email: Joi.string().min(6).max(255).required().email(),
     password: Joi.string().min(6).max(1024).required(),
-    client: Joi.string().min(6).max(1024).required(),
+    clientName: Joi.string().min(4).max(1024).required(),
+};
+
+const userSchema = {
+    name: Joi.string().min(6).max(255).required(),
+    email: Joi.string().min(6).max(255).required().email(),
+    password: Joi.string().min(6).max(1024).required(),
+};
+
+const inviteSchema = {
+    name: Joi.string().min(6).max(255).required(),
+    email: Joi.string().min(6).max(255).required().email(),
+    password: Joi.string().min(6).max(1024).required(),
 };
 
 const loginSchema = {
@@ -20,32 +34,26 @@ const loginSchema = {
 
 module.exports = {
 
-    async createUser(data) {
+    async registerClient(data) {
 
-        const { error } = Joi.validate(data, registerSchema);
+        const { error } = Joi.validate(data, clientSchema);
 
         if (error) {
             throw new Error(error);
         }
 
-        const existingUser = await User.findOne({ email: data.email });
-
-        if (existingUser) {
-            throw new Error('Email has already been registerd');
-        }
-
-        const client = await Client.findById(data.client);
-
-        if (!client) {
-            throw new Error(`Could not find client ${data.client}`);
-        }
+        const client = ClientService.createClient(data.clientName);
 
         const salt = await Bcrypt.genSalt(10);
+        const hashedPassword = await Bcrypt.hash(data.password, salt);
 
-        data.password = await Bcrypt.hash(data.password, salt);
-        data._id = new Mongoose.Types.ObjectId();
-
-        const user = new User(data);
+        const user = new User({
+            _id: new Mongoose.Types.ObjectId(),
+            name: data.name,
+            email: data.email,
+            password: hashedPassword,
+            client: client._id
+        });
 
         user.save();
 
@@ -57,21 +65,57 @@ module.exports = {
 
     },
 
-    async login(data) {
+    async registerUser(clientId, name, email, password) {
 
-        const { error } = Joi.validate(data, loginSchema);
+        const { error } = Joi.validate({ email, name, password }, userSchema);
 
         if (error) {
             throw new Error(error);
         }
 
-        const user = await User.findOne({ email: data.email });
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            throw new Error(`${email} is already registered`);
+        }
+
+        const client = await ClientService.getClient(clientId);
+        const salt = await Bcrypt.genSalt(10);
+        const hashedPassword = await Bcrypt.hash(password, salt);
+
+        const user = new User({
+            _id: new Mongoose.Types.ObjectId(),
+            name,
+            email,
+            password: hashedPassword,
+            client: client._id
+        });
+
+        user.save();
+
+        client.users.push(user._id);
+
+        await client.save();
+
+        return user;
+
+    },
+
+    async login(clientId, email, password) {
+
+        const { error } = Joi.validate({ email, password }, loginSchema);
+
+        if (error) {
+            throw new Error(error);
+        }
+
+        const user = await User.findOne({ email, client: clientId });
 
         if (!user) {
             throw new Error('Email or password is incorrect');
         }
 
-        const isValidPassword = await Bcrypt.compare(data.password, user.password);
+        const isValidPassword = await Bcrypt.compare(password, user.password);
 
         if (!isValidPassword) {
             throw new Error('Email or password is incorrect');
@@ -81,6 +125,40 @@ module.exports = {
             _id: user._id,
             client: user.client
         }, process.env.TOKEN_SECRET, { algorithm: 'HS256' });
+
+        return token;
+
+    },
+
+    async inviteUser(clientId, name, email, force) {
+
+        const { error } = Joi.validate({ name, email }, inviteSchema);
+
+        if (error) {
+            throw new Error(error);
+        }
+
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser && force) {
+            // TODO: Delete existing user and continue
+            // For use with "Resend invite"
+        } else if (existingUser && !force) {
+            throw new Error(`${email} is already registered`);
+        }
+
+        const user = await this.registerUser(clientId, name, email, PasswordGenerator.generate({
+            length: 10,
+            numbers: true
+        }));
+
+        const token = Jwt.sign({
+            _id: user._id,
+            client: user.client
+        }, process.env.TOKEN_SECRET, { algorithm: 'HS256' });
+
+        // TODO: Delete user if email cannot be sent
+        await EmailService.sendUserInvite(clientId, name, email, token);
 
         return token;
 

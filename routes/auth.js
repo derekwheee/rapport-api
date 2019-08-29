@@ -6,12 +6,11 @@ module.exports = [
         path: '/register',
         method: 'POST',
         config: {
-            // TODO: Only authenticated users can register new users
             auth: false,
             handler: async (req, h) => {
 
                 try {
-                    const user = await AuthService.createUser(req.payload);
+                    const user = await AuthService.registerClient(req.payload);
                     return {
                         user: user._id
                     };

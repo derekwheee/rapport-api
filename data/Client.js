@@ -5,6 +5,10 @@ const ClientSchema = new Schema({
     name: String,
     resorts: [{ type: Schema.Types.ObjectId, ref: 'Resort' }],
     users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    date: {
+        type: Date,
+        default: Date.now
+    },
 });
 
 const Client = model('Client', ClientSchema);
