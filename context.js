@@ -1,15 +1,19 @@
-const mongoose = require('mongoose');
+const Mongoose = require('mongoose');
+
 let _connection;
 
 require('dotenv').config();
 
-module.exports = (function() {
+module.exports = (function () {
+
     if (!_connection) {
-        mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true});
-        _connection = mongoose;
+        Mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
+        _connection = Mongoose;
     }
+
     return {
-        db : mongoose.connection,
-        mongoose
+        db : _connection.connection,
+        Mongoose : _connection
     };
+
 }());

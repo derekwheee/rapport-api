@@ -12,16 +12,32 @@
     "hapi-auth-jwt2": "^8.6.1",
     "hapi-router": "^5.0.0",
     "jsonwebtoken": "^8.5.1",
-    "jwks-rsa": "^1.6.0",
     "mongoose": "^5.6.9"
   },
   "devDependencies": {
-    "nodemon": "^1.19.1"
+    "@hapi/eslint-config-hapi": "^12.2.0",
+    "@hapi/eslint-plugin-hapi": "^4.3.4",
+    "ava": "^2.3.0",
+    "eslint": "^6.2.2",
+    "nodemon": "^1.19.1",
+    "nyc": "^14.1.1",
+    "pre-commit": "^1.2.2",
+    "supertest": "^4.0.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "test": "nyc ava",
+    "start": "nodemon index.js",
+    "lint": "./node_modules/.bin/eslint **/*.js"
   },
+  "ava": {
+    "files": [
+      "tests/**/*.js"
+    ]
+  },
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/frxnz/rapport.git"

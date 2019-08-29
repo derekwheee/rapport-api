@@ -7,8 +7,14 @@ module.exports = [
         config: {
             auth: 'jwt',
             handler: (req, h) => {
-                return 'Hello from a private endpoint!';
+
+                try {
+                    return 'Hello from a private endpoint!';
+                } catch (err) {
+                    return Boom.badImplementation('Something went wrong');
+                }
+
             }
         }
     },
-]
+];

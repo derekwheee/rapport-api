@@ -9,6 +9,7 @@ module.exports = [
             // TODO: Only authenticated users can register new users
             auth: false,
             handler: async (req, h) => {
+
                 try {
                     const user = await AuthService.createUser(req.payload);
                     return {
@@ -17,6 +18,7 @@ module.exports = [
                 } catch (err) {
                     return Boom.badRequest(err);
                 }
+
             }
         }
     },
@@ -26,12 +28,14 @@ module.exports = [
         config: {
             auth: false,
             handler: async (req, h) => {
+
                 try {
                     return await AuthService.login(req.payload);
                 } catch (err) {
                     return Boom.badRequest(err);
                 }
+
             }
         }
     },
-]
+];

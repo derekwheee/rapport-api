@@ -1,15 +1,10 @@
-'use strict';
-
 const Hapi = require('@hapi/hapi');
-const jwt = require('hapi-auth-jwt2');
-const bootstrap = require('./bootstrap');
+const Jwt = require('hapi-auth-jwt2');
 const AuthService = require('./services/auth');
 
 require('dotenv').config();
 
 const init = async () => {
-
-    await bootstrap();
 
     const server = new Hapi.server({
         port: process.env.PORT || 3001,
@@ -18,7 +13,7 @@ const init = async () => {
         }
     });
 
-    await server.register(jwt);
+    await server.register(Jwt);
 
     await server.auth.strategy('jwt', 'jwt', {
         key: process.env.TOKEN_SECRET,
@@ -40,8 +35,10 @@ const init = async () => {
 };
 
 process.on('unhandledRejection', (err) => {
+
     console.log(err);
     process.exit(1);
+
 });
 
-init();
+module.exports = init;
