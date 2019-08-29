@@ -22,7 +22,8 @@ const UserSchema = new Schema({
     date: {
         type: Date,
         default: Date.now
-    }
+    },
+    client: { type: Schema.Types.ObjectId, ref: 'Client' }
 });
 
 const User = model('User', UserSchema);
