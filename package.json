@@ -10,7 +10,6 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.0.0",
     "hapi-auth-jwt2": "^8.6.1",
-    "hapi-cors": "^1.0.3",
     "hapi-router": "^5.0.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.6.0",

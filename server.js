@@ -3,7 +3,6 @@
 const Hapi = require('@hapi/hapi');
 const jwt = require('hapi-auth-jwt2');
 const bootstrap = require('./bootstrap');
-const registerRoutes = require('./routes');
 const AuthService = require('./services/auth');
 
 require('dotenv').config();
@@ -14,10 +13,9 @@ const init = async () => {
 
     const server = new Hapi.server({
         port: process.env.PORT || 3001,
-    });
-
-    await server.register({
-        plugin: require('hapi-cors'),
+        routes: {
+            cors: true
+        }
     });
 
     await server.register(jwt);
