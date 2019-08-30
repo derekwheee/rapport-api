@@ -6,7 +6,7 @@ const baseRoute = '/api/client';
 
 module.exports = [
     {
-        path: `${baseRoute}/`,
+        path: `${baseRoute}`,
         method: 'GET',
         config: {
             auth: 'jwt',

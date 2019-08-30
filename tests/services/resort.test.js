@@ -68,7 +68,7 @@ test.serial('get resort', async t => {
 
 });
 
-test.afterEach.always(() => {
-    Resort.remove()
-    Client.remove()
+test.afterEach.always(async () => {
+    await Resort.deleteMany();
+    await Client.deleteMany();
 });

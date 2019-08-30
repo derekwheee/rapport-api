@@ -4,10 +4,10 @@ const AuthService = require('./services/auth');
 
 require('dotenv').config();
 
-const init = async () => {
+const init = async (port) => {
 
     const server = new Hapi.server({
-        port: process.env.PORT || 3001,
+        port: process.env.PORT || port || 3001,
         routes: {
             cors: true
         }
@@ -34,13 +34,7 @@ const init = async () => {
     console.log('Server running on %s', server.info.uri);
 
     return server;
+
 };
-
-process.on('unhandledRejection', (err) => {
-
-    console.log(err);
-    process.exit(1);
-
-});
 
 module.exports = init;

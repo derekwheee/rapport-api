@@ -3,13 +3,12 @@ const request = require('supertest');
 const MongodbMemoryServer = require('mongodb-memory-server').default;
 const mongoose = require('mongoose');
 const Bcrypt = require('bcryptjs');
-
-const server = require('../server');
+const bootstrap = require('./util/bootstrap');
 const User = require('../data/User');
 
 const testEmail = 'one@example.com';
 const testPassword = 'test123';
-let app;
+let _app;
 
 const mongod = new MongodbMemoryServer();
 
@@ -19,7 +18,7 @@ test.before(async () => {
 
     await mongoose.connect(uri, { useNewUrlParser : true });
 
-    app = await server();
+    _app = await bootstrap.getServerInstance();
 
 });
 
@@ -42,7 +41,7 @@ test.beforeEach(async () => {
 
 test.serial('log in', async t => {
 
-    const res = await request(app.listener)
+    const res = await request(_app.listener)
         .post('/token')
         .send({ email: testEmail, password: testPassword });
 
@@ -51,4 +50,6 @@ test.serial('log in', async t => {
 
 });
 
-test.afterEach.always(() => User.remove());
+test.afterEach.always(async () => await User.deleteMany());
+
+test.after.always(async () => await _app.stop());
