@@ -1,5 +1,5 @@
 const Boom = require('@hapi/boom');
-const ResortService = require('../services/rlient');
+const ResortService = require('../services/resort');
 
 const baseRoute = '/api/resort';
 

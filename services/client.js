@@ -1,3 +1,4 @@
+const Mongoose = require('mongoose');
 const Client = require('../data/Client');
 const ResortService = require('./resort');
 
@@ -12,6 +13,7 @@ module.exports = {
         }
 
         const client = new Client({
+            _id: new Mongoose.Types.ObjectId(),
             name
         });
 

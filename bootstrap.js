@@ -1,5 +1,4 @@
 const { db } = require('./context');
-const Seed = require('./seed');
 
 module.exports = function () {
 
@@ -7,10 +6,9 @@ module.exports = function () {
 
         db.on('error', console.error.bind(console, 'connection error:'));
 
-        db.once('open', async () => {
+        db.once('open', () => {
 
             console.log('Connected to database');
-            await Seed();
             resolve(db);
 
         });

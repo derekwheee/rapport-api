@@ -42,7 +42,7 @@ module.exports = {
             throw new Error(error);
         }
 
-        const client = ClientService.createClient(data.clientName);
+        const client = await ClientService.createClient(data.clientName);
 
         const salt = await Bcrypt.genSalt(10);
         const hashedPassword = await Bcrypt.hash(data.password, salt);
@@ -101,7 +101,7 @@ module.exports = {
 
     },
 
-    async login(clientId, email, password) {
+    async login({ email, password }) {
 
         const { error } = Joi.validate({ email, password }, loginSchema);
 
@@ -109,16 +109,16 @@ module.exports = {
             throw new Error(error);
         }
 
-        const user = await User.findOne({ email, client: clientId });
+        const user = await User.findOne({ email });
 
         if (!user) {
-            throw new Error('Email or password is incorrect');
+            throw new Error('Email* or password is incorrect');
         }
 
         const isValidPassword = await Bcrypt.compare(password, user.password);
 
         if (!isValidPassword) {
-            throw new Error('Email or password is incorrect');
+            throw new Error('Email or password* is incorrect');
         }
 
         const token = Jwt.sign({

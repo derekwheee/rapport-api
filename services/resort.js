@@ -6,7 +6,7 @@ module.exports = {
 
     async createResort(clientId, name) {
 
-        const client = Client.findById(clientId);
+        const client = await Client.findById(clientId).populate('resorts');
 
         const existingResort = await Resort.findOne({ name, client: clientId });
 
