@@ -12,7 +12,7 @@
     "generate-password": "^1.4.2",
     "hapi-auth-jwt2": "^8.6.1",
     "hapi-router": "^5.0.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.6.9",
     "nodemailer": "^6.3.0"
   },
